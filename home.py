@@ -9,8 +9,9 @@ import db as dbu
 dbu.create_table()
 def on_checkbox_change(index, task):
     newtask = (index, task)
-    mi.add_completed(index, task)
-    save_db_data()
+    check = mi.add_completed(index, task)
+    if check == True:
+        save_db_data()
     # print("Main_array", mi.array_task(), "Completed_array", mi.completed_array())
 def on_checkbox_change_re(index, task):
     # print("task", task)
@@ -21,8 +22,9 @@ def on_checkbox_change_re(index, task):
     if "date" in task:
         task["date"] = date_
     # print("task", task)
-    mi.add_task_back(index, task)
-    save_db_data()
+    check = mi.add_task_back(index, task)
+    if check == True:
+        save_db_data()
     # print("Main_array", mi.array_task(), "Completed_array", mi.completed_array())
     # st.rerun()
 

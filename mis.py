@@ -13,6 +13,9 @@ def add_completed(index, task):
     if index < len(array_task()):
         remove_task(index)  
         completed_array().append(task)
+        return True
+    else:
+        return False
 
 def array_task():
     if "task_array" not in st.session_state:
@@ -25,6 +28,9 @@ def add_task_back(index, task):
     if index < len(completed_array()):
         completed_array().pop(index)
         array_task().append(task)
+        return True
+    else:
+        return False
 def remove_task(index):
     array_task().pop(index)
 def sort_array(array):
