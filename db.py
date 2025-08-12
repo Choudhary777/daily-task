@@ -35,23 +35,26 @@ def get_user_data(username):
     conn.close()
     return user_data
 def check_username(username):
+    username_ = username.lower()
     conn = sqlite3.connect('mydatabase.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users WHERE username=?", (username,))
+    cursor.execute("SELECT * FROM users WHERE username=?", (username_,))
     user = cursor.fetchone()
     conn.close()
     return user
 def check_user(username, password):
+    username_ = username.lower()
     conn = sqlite3.connect('mydatabase.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password))
+    cursor.execute("SELECT * FROM users WHERE username=? AND password=?", (username_, password))
     user = cursor.fetchone()
     conn.close()
     return user
 def insert_user(username, password):
+    username_ = username.lower()
     conn = sqlite3.connect('mydatabase.db')
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
+    cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username_, password))
     conn.commit()
     conn.close()
 def drop_table():

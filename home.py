@@ -76,7 +76,17 @@ def get_db_data():
         values = json.loads(data[1])
         converted_completed = convert_iso_dates(values)
         mi.update_arrays(converted_pening, converted_completed)
+def change_text(args):
+        if args in st.session_state:
+            value = st.session_state[args]
+            print("value", value)
+            if value.endswith("\n\n"):
+                value = value.replace("\n\n","\n")
+                st.session_state[args] = value
+
 def home():
+    if "counter" not in st.session_state:
+        st.session_state.counter = 0
     if "isadded" not in st.session_state:
         st.session_state.isadded = False
     if "current_user" not in st.session_state:
@@ -96,13 +106,15 @@ def home():
                         st.session_state.task = ""
                         st.session_state.isadded = False
                     st.text_area("Enter your name", key="task", placeholder="Enter your task here", label_visibility="collapsed",height=120)
-                with col2:                    
+                with col2:
                     if st.button("Submit", icon="🚀",key="submit", use_container_width=True, type="primary"):
                         if "task" in st.session_state and st.session_state.task != "":
                             datetime_ = datetime.now()
                             date_ = datetime_.strftime("%d-%m-%Y")
                             # print("datetime", datetime_)
                             # mi.add_task(st.session_state.task,False, datetime_,date_)
+                            task_x = st.session_state.task
+                            task_x = task_x.strip()
                             mi.add_task({"task": st.session_state.task, "status": False, "datetime": datetime_, "date": date_})
                             save_db_data()
                             st.session_state.isadded = True
@@ -129,6 +141,7 @@ def home():
                     taskstatus = "Pending"
                     if status:
                         taskstatus = "Completed"
+                    
                     with st.container(border= True):
                         newtask = task_
                         if "\n" in newtask:
@@ -137,6 +150,7 @@ def home():
                         with st.container(horizontal=True, horizontal_alignment="center", vertical_alignment="center", gap="small"):
                             st.markdown(f'<span style="color:#0D8B8BFF;font-size:12px;">{date_}</span>', unsafe_allow_html=True)
                             st.markdown(f'<span style="color:orange;font-size:14px;">{taskstatus}</span>', unsafe_allow_html=True)
+                            st.button(" ", icon="✏️", key=f"Edit_{i}", type="tertiary", )
                             st.session_state[f"Check_{i}"] = False
                             st.checkbox("*Launched*", key=f"Check_{i}",on_change=partial(on_checkbox_change, i, task),)
         with st.expander("**COMPLETED TASKS**",):
@@ -160,10 +174,13 @@ def home():
                             with st.container(horizontal=True, horizontal_alignment="center", vertical_alignment="center", gap="small"):
                                 st.markdown(f'<span style="color:#0D8B8BFF;font-size:12px;">{date_}</span>', unsafe_allow_html=True)
                                 st.markdown(f'<span style="color:orange;font-size:14px;">Completed</span>', unsafe_allow_html=True)
+                                st.button(" ", icon="🗑️", key=f"deletre_{i}", type="tertiary", )
                                 st.session_state[f"Checkre_{i}"] = False
                                 st.checkbox("*Re-launch*", key=f"Checkre_{i}",on_change=partial(on_checkbox_change_re, i, task))
                 else:
                     st.markdown("<div style='color:green; padding-bottom:10px'><i>No completed tasks</i></div>", unsafe_allow_html=True)
+        with st.expander("**DELETED TASKS**",):
+            pass
     else:
         st.subheader("Login/Signup")
         with st.container():
@@ -177,15 +194,15 @@ def home():
                         if users == None:
                             st.toast("**User name or passward is incorrect**", icon="🚨")
                         else:
-                            # print("users", users)
-                            st.session_state.current_user = st.session_state.user_name
+                            usern = st.session_state.user_name
+                            st.session_state.current_user = usern.lower()
                             get_db_data()
                             st.rerun()
                     else:
                         st.toast("**Please enter user name or password**", icon="🚨")
             if st.button("Signup", key="signup", use_container_width=True, type="primary"):
                 if "user_name" in st.session_state and "user_pass" in st.session_state:
-                    if st.session_state.user_name != "" and st.session_state.user_pass != "":
+                    if st.session_state.user_name != "" and st.session_state.user_pass != "" and len(st.session_state.user_pass) >= 4 and len(st.session_state.user_name) >= 4:
                         users = dbu.check_username(st.session_state.user_name)
                         if users == None:
                             dbu.insert_user(st.session_state.user_name, st.session_state.user_pass)
@@ -193,5 +210,5 @@ def home():
                         else:
                             st.toast("**User already exists**", icon="🚨")
                     else:
-                        st.toast("**Please enter user name or password**", icon="🚨")
+                        st.toast("**Please enter user name or password (length should minimum 4)**", icon="🚨")
 home()
