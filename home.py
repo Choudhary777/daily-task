@@ -147,10 +147,10 @@ def home():
                         if "\n" in newtask:
                             newtask = newtask.replace("\n","<br>")
                         st.markdown(f'<span style="color:#069C47FF;font-size:17px;">{newtask}</span>', unsafe_allow_html=True)
-                        with st.container(horizontal=True, horizontal_alignment="center", vertical_alignment="center", gap="small"):
+                        with st.container(horizontal=True, horizontal_alignment="center", vertical_alignment="center", ):
+                            st.button(" ", icon="📝", key=f"Edit_{i}", type="tertiary", )
                             st.markdown(f'<span style="color:#0D8B8BFF;font-size:12px;">{date_}</span>', unsafe_allow_html=True)
                             st.markdown(f'<span style="color:orange;font-size:14px;">{taskstatus}</span>', unsafe_allow_html=True)
-                            st.button(" ", icon="✏️", key=f"Edit_{i}", type="tertiary", )
                             st.session_state[f"Check_{i}"] = False
                             st.checkbox("*Launched*", key=f"Check_{i}",on_change=partial(on_checkbox_change, i, task),)
         with st.expander("**COMPLETED TASKS**",):
@@ -172,9 +172,9 @@ def home():
                                 newtask = newtask.replace("\n","<br>")
                             st.markdown(f'<span style="color:#069C47FF;font-size:17px;">{newtask}</span>', unsafe_allow_html=True)
                             with st.container(horizontal=True, horizontal_alignment="center", vertical_alignment="center", gap="small"):
+                                st.button(" ", icon="🗑️", key=f"deletre_{i}", type="tertiary", )
                                 st.markdown(f'<span style="color:#0D8B8BFF;font-size:12px;">{date_}</span>', unsafe_allow_html=True)
                                 st.markdown(f'<span style="color:orange;font-size:14px;">Completed</span>', unsafe_allow_html=True)
-                                st.button(" ", icon="🗑️", key=f"deletre_{i}", type="tertiary", )
                                 st.session_state[f"Checkre_{i}"] = False
                                 st.checkbox("*Re-launch*", key=f"Checkre_{i}",on_change=partial(on_checkbox_change_re, i, task))
                 else:
